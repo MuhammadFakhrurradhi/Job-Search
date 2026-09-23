@@ -1,0 +1,101 @@
+# Copy to config.yaml (git-ignored) and edit.
+#   cp config.example.yaml config.yaml
+
+# Browser session is stored here after you log in manually once.
+# Your LinkedIn password is never stored by this tool.
+profile_dir: .browser-profile
+headless: false
+
+search:
+  keywords:
+    - "Data Analyst"
+    - "Python Developer"
+  location: "Indonesia"
+  # any of: onsite, remote, hybrid
+  workplace: [remote, hybrid]
+  # any of: internship, entry, associate, mid_senior, director, executive
+  experience: [entry, associate, mid_senior]
+  # any of: full_time, part_time, contract, temporary, internship, volunteer, other
+  job_types: [full_time, contract]
+  # any, past_24h, past_week, past_month
+  date_posted: past_week
+  easy_apply_only: true
+  sort_by_recent: true
+
+filters:
+  # Case-insensitive regexes. A job passes only if the title matches at least one
+  # include pattern (when any are given) and matches no exclude pattern.
+  title_include: []
+  title_exclude: ["\\bsenior\\b", "\\blead\\b", "principal", "manager"]
+  company_exclude: ["Some Staffing Agency"]
+  description_exclude: ["security clearance", "must be a US citizen"]
+
+limits:
+  max_applications_per_run: 15
+  max_pages_per_search: 3
+  # random pause (seconds) between actions, to keep a human pace
+  delay_seconds: [2, 6]
+  # longer pause between applications
+  between_applications_seconds: [20, 60]
+
+behavior:
+  # dry_run: fill every step but never click "Submit application"
+  dry_run: true
+  # review_before_submit: pause and ask y/n in the terminal before each submit
+  review_before_submit: true
+  # When a question has no configured answer: "ask" (prompt in the terminal)
+  # or "skip" (discard that application and record the question)
+  on_unknown_question: ask
+  # Uncheck "Follow <company>" on the review page
+  unfollow_company: true
+
+files:
+  tracker: applications.csv
+  unanswered: unanswered_questions.csv
+  screenshots_dir: screenshots
+
+applicant:
+  first_name: "Your"
+  last_name: "Name"
+  email: "you@example.com"
+  phone: "+62 812 0000 0000"
+  phone_country: "Indonesia (+62)"
+  city: "Jakarta, Indonesia"
+  # Optional: upload this resume when the form asks for one (otherwise the
+  # resume already saved on LinkedIn is used)
+  resume_path: ""
+  default_years_experience: 2
+  # Used for otherwise-unmatched yes/no questions. Leave empty to treat them as unknown.
+  default_yes_no: ""
+
+# Answer bank. First rule whose regex matches the question label wins.
+# The answer is matched against dropdown/radio options case-insensitively.
+answers:
+  - match: "years.*experience.*python"
+    answer: "3"
+  - match: "years.*experience"
+    answer: "2"
+  - match: "authori[sz]ed to work|legally (allowed|eligible)"
+    answer: "Yes"
+  - match: "require.*sponsorship|visa sponsorship"
+    answer: "No"
+  - match: "willing to relocate|relocat"
+    answer: "Yes"
+  - match: "remote|work from home"
+    answer: "Yes"
+  - match: "notice period"
+    answer: "30"
+  - match: "(expected|desired).*(salary|compensation)|salary expectation"
+    answer: "15000000"
+  - match: "current.*(salary|ctc|compensation)"
+    answer: "12000000"
+  - match: "english.*(proficien|level)"
+    answer: "Professional"
+  - match: "degree|bachelor"
+    answer: "Yes"
+  - match: "linkedin.*(profile|url)"
+    answer: "https://www.linkedin.com/in/your-profile"
+  - match: "github|portfolio|website"
+    answer: "https://github.com/your-username"
+  - match: "gender|race|ethnicity|veteran|disability"
+    answer: "Prefer not to say"

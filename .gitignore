@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+# Personal data — never commit
+config.yaml
+.browser-profile/
+applications.csv
+unanswered_questions.csv
+screenshots/
+resume*.pdf

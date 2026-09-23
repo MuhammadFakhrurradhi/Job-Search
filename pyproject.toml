@@ -1,0 +1,19 @@
+[project]
+name = "linkedin-apply"
+version = "0.1.0"
+description = "Semi-automated LinkedIn Easy Apply assistant with filters, an answer bank and an application tracker"
+requires-python = ">=3.10"
+dependencies = ["playwright>=1.40", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+linkedin-apply = "linkedin_apply.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["linkedin_apply"]
