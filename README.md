@@ -54,6 +54,32 @@ Recommended workflow:
    `config.yaml`.
 3. Switch to `--live` with review on, and keep `--max` small.
 
+## Filling the config from your resume (offline OCR)
+
+`linkedin-apply resume` reads your resume and prints the values for `config.yaml`: name,
+email, phone, city, LinkedIn/GitHub/portfolio links and years of experience. It runs entirely
+on your machine. Nothing is uploaded, and it needs no network connection.
+
+```bash
+pip install -e ".[ocr]"                       # one-time: pypdfium2 + RapidOCR (Python 3.10–3.12)
+linkedin-apply resume resume.pdf              # print a YAML snippet to paste into config.yaml
+linkedin-apply resume resume.pdf -o from_resume.yaml
+linkedin-apply resume scan.jpg --text         # just show the extracted text
+linkedin-apply resume resume.pdf --ocr        # OCR every page even if the PDF has text
+```
+
+- PDFs exported from Word or Google Docs already contain text, so it is read directly and fast.
+  Scanned pages (or pages with almost no text) are rendered at 300 DPI and OCR'd.
+  PNG/JPG/TIFF/WebP images are always OCR'd.
+- OCR uses [RapidOCR](https://github.com/RapidAI/RapidOCR). Its ONNX models ship inside the
+  `rapidocr-onnxruntime` wheel, so there is no separate download and no server is involved.
+- Years of experience come from a stated "N years of experience" line, or else from the date
+  ranges under your *Work Experience* / *Pengalaman Kerja* heading. Overlapping jobs are
+  counted once, and education dates are ignored. English and Indonesian month names and
+  "Present"/"Sekarang" are understood.
+- OCR can misread characters (`0` for `o`, or missing spaces in ALL-CAPS names). The snippet
+  lists the fields it couldn't find. **Check every value before you paste it.**
+
 ## Configuration
 
 See [`config.example.yaml`](config.example.yaml); every option has a comment there. The main ones:

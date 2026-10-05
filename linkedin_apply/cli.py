@@ -29,7 +29,15 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("urls", help="print the search URLs the config produces")
     sub.add_parser("stats", help="summarise the application tracker")
 
+    resume = sub.add_parser("resume", help="read your resume offline (PDF/image, OCR if scanned) into config values")
+    resume.add_argument("file", help="resume PDF or image")
+    resume.add_argument("--ocr", action="store_true", help="OCR every page even if the PDF has a text layer")
+    resume.add_argument("--text", action="store_true", help="print the extracted text instead of config values")
+    resume.add_argument("-o", "--output", help="write the YAML snippet to this file instead of printing it")
+
     args = parser.parse_args(argv)
+    if args.command == "resume":  # needs no config.yaml
+        return _resume(args)
     try:
         cfg = load_config(args.config)
     except ConfigError as exc:
@@ -76,6 +84,28 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Mode: {mode_text}. Max applications: {cfg.limits.max_applications_per_run}")
 
     EasyApplyBot(cfg, tracker, AnswerBank(cfg.answers, cfg.applicant)).run()
+    return 0
+
+
+def _resume(args: argparse.Namespace) -> int:
+    from .resume import ResumeError, extract_text, parse_resume, to_config_yaml
+
+    try:
+        text = extract_text(args.file, force_ocr=args.ocr)
+    except ResumeError as exc:
+        print(f"resume error: {exc}", file=sys.stderr)
+        return 2
+    if args.text:
+        print(text)
+        return 0
+    resume_path = args.file if args.file.lower().endswith(".pdf") else ""
+    snippet = to_config_yaml(parse_resume(text), resume_path=resume_path)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as fh:
+            fh.write(snippet)
+        print(f"Wrote {args.output}")
+    else:
+        print(snippet, end="")
     return 0
 
 
